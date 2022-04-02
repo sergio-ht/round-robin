@@ -3,6 +3,8 @@ const tbody = document.querySelector("tbody");
 const time = document.getElementById("time");
 const quantum = document.getElementById("quantum");
 const animateBtn = document.getElementById("animate-btn");
+const standardSpan = document.getElementById("standard-deviation");
+const waitingSpan = document.getElementById("waiting-time");
 
 const processList = [
   // { id: 1, time: 1, start: 0, hue: 100 },
@@ -129,6 +131,14 @@ function updateTable(startTimes, endTimes, waitingTimes) {
   }
 }
 
+function getStandardDeviation(array) {
+  const n = array.length;
+  const mean = array.reduce((a, b) => a + b) / n;
+  return Math.sqrt(
+    array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n
+  );
+}
+
 animateBtn.addEventListener("click", (e) => {
   e.preventDefault();
 
@@ -155,6 +165,18 @@ animateBtn.addEventListener("click", (e) => {
 
   // update table with times
   updateTable(startTimes, endTimes, waitingTimes);
+
+  // avg waiting times
+  const avgWaitingTimes =
+    waitingTimes.reduce((a, b) => a + b) / waitingTimes.length;
+  waitingSpan.textContent = avgWaitingTimes;
+
+  // standard deviation
+  const sd = getStandardDeviation(waitingTimes);
+  standardSpan.textContent = sd;
+
+  console.log(avgWaitingTimes);
+  console.log(sd);
 
   // setup
   const data = {
