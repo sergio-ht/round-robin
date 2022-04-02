@@ -87,6 +87,10 @@ function displayHiddenElements() {
   hiddenTable.forEach((element) => element.classList.remove("hidden-table"));
 }
 
+function getStartTimes(timeIntervals) {
+  return timeIntervals[0].map((timeInterval) => timeInterval[0]);
+}
+
 function getEndTimes(timeIntervals) {
   const endTimes = [...Array(timeIntervals.length)];
   for (let i = 0; i < timeIntervals.length; i++) {
@@ -105,10 +109,15 @@ function getWaitingTimes(endTimes) {
   });
 }
 
-function updateTable(endTimes, waitingTimes) {
+function updateTable(startTimes, endTimes, waitingTimes) {
   const rows = tbody.getElementsByTagName("tr");
   let i = 0;
   for (let row of rows) {
+    // add startTime
+    const td_start = document.createElement("td");
+    td_start.textContent = startTimes[i];
+    row.appendChild(td_start);
+
     // add endTime
     const td_end = document.createElement("td");
     td_end.textContent = endTimes[i];
@@ -135,6 +144,9 @@ animateBtn.addEventListener("click", (e) => {
     (data, index) => new DataSet(data, index)
   );
 
+  // calculate start times
+  const startTimes = getStartTimes(dataIterations);
+
   // calculate end times
   const endTimes = getEndTimes(dataIterations);
 
@@ -142,7 +154,7 @@ animateBtn.addEventListener("click", (e) => {
   const waitingTimes = getWaitingTimes(endTimes);
 
   // update table with times
-  updateTable(endTimes, waitingTimes);
+  updateTable(startTimes, endTimes, waitingTimes);
 
   // setup
   const data = {
