@@ -89,13 +89,25 @@ function displayHiddenElements() {
   }
 }
 
-function updateTable() {
+function getEndTimes(timeIntervals) {
+  const endTimes = [...Array(timeIntervals.length)];
+  for (let i = 0; i < timeIntervals.length; i++) {
+    timeIntervals[i].forEach((it, index) => {
+      if (it[0] != it[1]) {
+        endTimes[index] = it[1];
+      }
+    });
+  }
+  return endTimes;
+}
+
+function updateTable(endTimes) {
   const rows = tbody.getElementsByTagName("tr");
   let i = 0;
   for (let row of rows) {
     // create td
     const td = document.createElement("td");
-    td.textContent = `${i++}`;
+    td.textContent = endTimes[i++];
     row.appendChild(td);
   }
 }
@@ -106,9 +118,6 @@ animateBtn.addEventListener("click", (e) => {
   // display hidden elements
   displayHiddenElements();
 
-  // update table with times
-  updateTable();
-
   const processesValues = processList.map((process) => process.time);
   const dataIterations = getTimeIntervals(
     processesValues,
@@ -117,6 +126,12 @@ animateBtn.addEventListener("click", (e) => {
   const datasets = dataIterations.map(
     (data, index) => new DataSet(data, index)
   );
+
+  // calculate end times
+  const endTimes = getEndTimes(dataIterations);
+
+  // update table with times
+  updateTable(endTimes);
 
   // setup
   const data = {
